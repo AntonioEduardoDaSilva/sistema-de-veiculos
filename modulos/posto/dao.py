@@ -9,6 +9,8 @@ class PostoDao:
                    ' values(%s, %s, %s) RETURNING id'
     _SELECT_ALL = f'SELECT * FROM {_TABLE_NAME}'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE ID={}'
+    _SELECT_BY_CNPJ = "SELECT * FROM {} WHERE CNPJ='{}'"
+    _UPDATE = "UPDATE {} SET {}='{}' WHERE ID={}"
 
     def __init__(self):
         self.database = ConnectDataBase().get_instance()
@@ -49,5 +51,25 @@ class PostoDao:
         posto = Posto(**data)
         cursor.close()
         return posto
+    
+    def get_by_cnpj(self, cnpj):
+        cursor = self.database.cursor()
+        cursor.execute(self._SELECT_BY_CNPJ.format(self._TABLE_NAME, cnpj))
+        coluns_name = [desc[0] for desc in cursor.description]
+        posto = cursor.fetchone()
+        if not posto:
+            return None
+        data = dict(zip(coluns_name, posto))
+        posto = Posto(**data)
+        cursor.close()
+        return posto
+
+    def update_posto_by_id(self, coluna, novoValor, id):
+            cursor = self.database.cursor()
+            cursor.execute(self._UPDATE.format(self._TABLE_NAME, coluna, novoValor, id))
+            self.database.commit()
+            cursor.close()
+        
+        
 
     #TODO: atualizar posto
