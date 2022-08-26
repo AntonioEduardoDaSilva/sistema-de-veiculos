@@ -10,7 +10,8 @@ class PostoDao:
     _SELECT_ALL = f'SELECT * FROM {_TABLE_NAME}'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE ID={}'
     _SELECT_BY_CNPJ = "SELECT * FROM {} WHERE CNPJ='{}'"
-    _UPDATE = "UPDATE {} SET {}='{}' WHERE ID={}"
+    _UPDATE = "UPDATE {} SET {}='{}', {}='{}', {}='{}' WHERE ID={}"
+    _DELETE = 'DELETE FROM {} WHERE ID={}'
 
     def __init__(self):
         self.database = ConnectDataBase().get_instance()
@@ -64,12 +65,26 @@ class PostoDao:
         cursor.close()
         return posto
 
-    def update_posto_by_id(self, coluna, novoValor, id):
+    def update_posto(self, postoNew, postoOld):
+            #posto = self.get_posto_by_id(id)
             cursor = self.database.cursor()
-            cursor.execute(self._UPDATE.format(self._TABLE_NAME, coluna, novoValor, id))
+            cursor.execute(self._UPDATE.format(self._TABLE_NAME,
+             "nome",  postoNew.nome, 
+             "cidade", postoNew.cidade, 
+             "cnpj", postoNew.cnpj, 
+             postoOld.id
+            ))
             self.database.commit()
             cursor.close()
-        
-        
 
+    def delete_posto(self, id):
+            #posto = self.get_posto_by_id(id)
+            cursor = self.database.cursor()
+            cursor.execute(self._DELETE.format(self._TABLE_NAME, id
+            ))
+            self.database.commit()
+            cursor.close()
+
+        
+    
     #TODO: atualizar posto
