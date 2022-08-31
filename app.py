@@ -1,14 +1,17 @@
 from database.connect import ConnectDataBase
+from modulos.motorista.controller import app_motorista
 from modulos.motorista.dao import MotoristaDao
 from modulos.posto.dao import PostoDao
 from modulos.posto.posto import Posto
 from flask import Flask
 from modulos.posto.controller import app_empresa
+from modulos.marca.controller import app_marca
 
 
 app = Flask(__name__)
 app.register_blueprint(app_empresa)
-
+app.register_blueprint(app_motorista)
+app.register_blueprint(app_marca)
 
 app.run()
 
@@ -31,4 +34,3 @@ for posto in postos:
   print(posto.nome)
 print("--------------------------------")
 #print(dao_posto.get_por_id(1))
-
