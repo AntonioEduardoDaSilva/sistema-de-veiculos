@@ -64,7 +64,8 @@ def update_modelo(id):
     data = request.form.to_dict(flat=True)
 
     modeloOld = dao_modelo.get_por_id(id)
-
+    if data.get('marca_id')=='':
+        return make_response('O id de marca não foi informado.')
     marca = dao_marca.get_por_id(data.get('marca_id'))
     if not marca:
         return make_response({'erro': "id da marca não existe."}, 400)
