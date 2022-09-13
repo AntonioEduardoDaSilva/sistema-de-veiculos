@@ -83,17 +83,12 @@ def update_viagem(id):
         if key not in data.keys() or data[key] =='':
             erros.append({'field': key, 'mensage': "Este campo é obrigátorio."})
     
-    if data.get('veiculo_id') != None:
-        for i in data['veiculo_id']:
+    for key in ['veiculo_id', 'motorista_id']:
+        for i in data[key]:
             if i.isdigit()==False:
-                erros.append({'field': 'veiculo_id', 'mensage': 'Este campo só aceita números inteiros'})
+                erros.append({'field': key, 'mensage': 'Este campo só aceita números inteiros'})
                 break
     
-    if data.get('motorista_id') != None:
-        for i in data['motorista_id']:
-            if i.isdigit()==False:
-                erros.append({'field': 'motorista_id', 'mensage': 'Este campo só aceita números inteiros'})
-                break
 
     if erros:
         return make_response({'errors': erros}, 400)
@@ -109,7 +104,7 @@ def update_viagem(id):
         return make_response({'erro': "id do motorista não existe."}, 400)
 
     if not viagemOld:
-        return make_response('O id informado não existe ')
+        return make_response({'erro': 'O id informado não existe.'})
     
     viagemNew = Viagem(**data)
     dao_viagem.update_viagem(viagemNew, viagemOld)
@@ -123,7 +118,7 @@ def delete_viagem(id):
     viagem = dao_viagem.get_por_id(id)
 
     if not viagem:
-        return make_response('O id informado não existe ')
+        return make_response({'erro': 'O id informado não existe'})
     dao_viagem.delete_viagem(id)
     return make_response({
         'Detetado com sucesso': True
